@@ -1,0 +1,36 @@
+# Query: from('Pro
+
+7 results - 5 files
+
+src/App.jsx:
+  33    const addProfile = async (newProfile) => {
+  34:     const { data, error } = await supabase.from('profiles').insert([newProfile]);
+  35      if (error) {
+
+  42    const updateProfile = async (id, updatedProfile) => {
+  43:     const { data, error } = await supabase.from('profiles').update(updatedProfile).eq('id', id);
+  44      if (error) {
+
+  51    const deleteProfile = async (id) => {
+  52:     const { error } = await supabase.from('profiles').delete().eq('id', id);
+  53      if (error) {
+
+src/ProfilesList.jsx:
+  13      const { data, error } = await supabase
+  14:       .from('profiles')
+  15        .select('*');
+
+src/components/AddProfileModal.jsx:
+  32  
+  33:     const { error } = await supabase.from('profiles').insert([form]);
+  34  
+
+src/components/ProfileGrid.jsx:
+  19        const { data: profileData, error: profileError } = await supabase
+  20:         .from('profiles')
+  21          .select(`
+
+src/components/ProfileList.jsx:
+  10      const { data, error } = await supabase
+  11:       .from('profiles')
+  12        .select('*')
