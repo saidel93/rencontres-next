@@ -9,7 +9,6 @@ import { DataProvider, useData } from './components/DataManager';
 
 import CategoryPage from './pages/CategoryPage';
 import CityPage from './pages/CityPage';
-import ProfilePage from './pages/ProfilePage';
 import LegalPage from './components/LegalPage';
 import AllCategoriesPage from './pages/AllCategoriesPage';
 import CitiesPage from './pages/CitiesPage';
