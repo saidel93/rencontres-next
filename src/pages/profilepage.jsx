@@ -41,15 +41,13 @@ const ProfilePage = () => {
     return <div className="p-8 text-center text-red-500">Profil non trouvé.</div>;
   }
 
-  const metaDescription = profile.description
-    ?.split(' ')
-    .slice(0, 25)
-    .join(' ') + '...';
+  const metaDescription =
+    (profile?.description?.split(' ').slice(0, 25).join(' ') || 'Découvrez ce profil.') + '...';
 
   return (
     <>
       <Helmet>
-        <title>{profile.title}</title>
+        <title>{profile?.title || 'Profil'}</title>
         <meta name="description" content={metaDescription} />
       </Helmet>
 
