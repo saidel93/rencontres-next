@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import { supabase } from '../supabaseClient';
-import { FaSnapchatGhost, FaWhatsapp, FaMapMarkerAlt, FaHeart } from 'react-icons/fa';
+import { FaSnapchatGhost, FaWhatsapp, FaMapMarkerAlt } from 'react-icons/fa';
 import { useData } from '../components/DataManager';
 
 const ProfilePage = () => {
@@ -40,7 +40,9 @@ const ProfilePage = () => {
   if (loading) return <div className="p-8 text-center text-gray-500">Chargement du profil...</div>;
   if (notFound) return <div className="p-8 text-center text-red-500">Profil non trouvé.</div>;
 
-  const metaDescription = profile.description?.split(' ').slice(0, 25).join(' ') + '...';
+  const metaDescription =
+    profile.meta_description ||
+    profile.description?.split(' ').slice(0, 25).join(' ') + '...';
 
   const formatPartial = (value = '') => {
     if (!value || value.length < 3) return '***';
@@ -49,50 +51,58 @@ const ProfilePage = () => {
 
   const otherProfiles = profiles
     .filter((p) => p.city === profile.city && p.slug !== slug)
-    .slice(0, 4); // Show 4 others from same city
+    .slice(0, 4);
 
   return (
     <>
       <Helmet>
-        <title>{profile.title}</title>
-        <meta name="description" content={metaDescription} />
+        <title>{profile.meta_title || profile.title || 'Profil Sexy Québec'}</title>
+        <meta
+          name="description"
+          content={
+            metaDescription || "Découvrez ce profil sexy prêt à discuter, s’amuser et plus encore."
+          }
+        />
       </Helmet>
 
       <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-6 grid grid-cols-1 lg:grid-cols-4 gap-8">
-  {/* LEFT SIDEBAR */}
-  <aside className="hidden lg:block col-span-1 space-y-6">
-    <h2 className="text-xl font-bold text-pink-600">❤️ Plus de Profils</h2>
-    <div className="space-y-2">
-      {profiles.slice(0, 5).map((p) => (
-        <Link key={p.id} to={`/profile/${p.slug}`} className="block text-sm text-gray-700 hover:text-pink-600 underline">
-          {p.title}
-        </Link>
-      ))}
-    </div>
+        {/* LEFT SIDEBAR */}
+        <aside className="hidden lg:block col-span-1 space-y-6">
+          <h2 className="text-xl font-bold text-pink-600">❤️ Plus de Profils</h2>
+          <div className="space-y-2">
+            {profiles.slice(0, 5).map((p) => (
+              <Link
+                key={p.id}
+                to={`/profile/${p.slug}`}
+                className="block text-sm text-gray-700 hover:text-pink-600 underline"
+              >
+                {p.title}
+              </Link>
+            ))}
+          </div>
 
-    <h2 className="text-lg font-semibold mt-6 text-pink-500">📂 Catégories</h2>
-    <ul className="text-sm space-y-1">
-      {categories.map((c) => (
-        <li key={c.id}>
-          <Link to={`/category/${c.slug}`} className="text-gray-700 hover:text-pink-600">
-            {c.name}
-          </Link>
-        </li>
-      ))}
-    </ul>
+          <h2 className="text-lg font-semibold mt-6 text-pink-500">📂 Catégories</h2>
+          <ul className="text-sm space-y-1">
+            {categories.map((c) => (
+              <li key={c.id}>
+                <Link to={`/category/${c.slug}`} className="text-gray-700 hover:text-pink-600">
+                  {c.name}
+                </Link>
+              </li>
+            ))}
+          </ul>
 
-    <h2 className="text-lg font-semibold mt-6 text-pink-500">🏙️ Villes</h2>
-    <ul className="text-sm space-y-1">
-      {cities.map((c) => (
-        <li key={c.id}>
-          <Link to={`/city/${c.slug}`} className="text-gray-700 hover:text-pink-600">
-            {c.name}
-          </Link>
-        </li>
-      ))}
-    </ul>
-  </aside>
-
+          <h2 className="text-lg font-semibold mt-6 text-pink-500">🏙️ Villes</h2>
+          <ul className="text-sm space-y-1">
+            {cities.map((c) => (
+              <li key={c.id}>
+                <Link to={`/city/${c.slug}`} className="text-gray-700 hover:text-pink-600">
+                  {c.name}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </aside>
 
         {/* MAIN PROFILE */}
         <div className="col-span-1 lg:col-span-3 bg-white p-6 rounded-2xl shadow-lg border border-pink-100">
