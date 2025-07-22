@@ -1,5 +1,6 @@
 import { useParams, Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
+import { Helmet } from 'react-helmet';
 import { supabase } from '../supabaseClient';
 import ProfileCard from '../components/ProfileCard';
 
@@ -14,9 +15,10 @@ const CategoryPage = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        // 1. Fetch category with meta SEO data
         const { data: category, error: catError } = await supabase
           .from('Categories')
-          .select('*')
+          .select('*') // this includes meta_title and meta_description
           .eq('slug', slug)
           .single();
 
@@ -28,6 +30,7 @@ const CategoryPage = () => {
 
         setCategoryData(category);
 
+        // 2. Fetch profiles
         const { data: profileList, error: profileError } = await supabase
           .from('profiles')
           .select('*')
@@ -40,6 +43,7 @@ const CategoryPage = () => {
           setProfiles(profileList);
         }
 
+        // 3. Fetch cities
         const { data: cityList } = await supabase.from('Cities').select('*');
         if (cityList) setCities(cityList);
       } catch (e) {
@@ -65,44 +69,59 @@ const CategoryPage = () => {
   }
 
   return (
-    <div className="max-w-6xl mx-auto p-4">
-      <h1 className="text-3xl font-bold mb-4 text-center text-pink-600">{categoryData.title}</h1>
-      <p className="mb-4 text-center text-gray-700">{categoryData.description}</p>
-
-      {categoryData.content && (
-        <div
-          className="prose prose-pink prose-sm sm:prose-base mb-8 mx-auto"
-          dangerouslySetInnerHTML={{ __html: categoryData.content }}
+    <>
+      <Helmet>
+        <title>
+          {categoryData.meta_title || `${categoryData.title} – Rencontres`}
+        </title>
+        <meta
+          name="description"
+          content={
+            categoryData.meta_description ||
+            `Découvrez les femmes dans la catégorie ${categoryData.title}.`
+          }
         />
-      )}
+      </Helmet>
 
-      <h2 className="text-2xl font-semibold mb-4">Profils en vedette</h2>
+      <div className="max-w-6xl mx-auto p-4">
+        <h1 className="text-3xl font-bold mb-4 text-center text-pink-600">{categoryData.title}</h1>
+        <p className="mb-4 text-center text-gray-700">{categoryData.description}</p>
 
-      {profiles.length === 0 ? (
-        <p className="text-center text-gray-600">Aucun profil trouvé dans cette catégorie.</p>
-      ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
-          {profiles.map((profile) => (
-            <ProfileCard
-              key={profile.id}
-              profile={profile}
-              cities={cities}
-              onEdit={() => {}}
-              onDelete={() => {}}
-            />
-          ))}
+        {categoryData.content && (
+          <div
+            className="prose prose-pink prose-sm sm:prose-base mb-8 mx-auto"
+            dangerouslySetInnerHTML={{ __html: categoryData.content }}
+          />
+        )}
+
+        <h2 className="text-2xl font-semibold mb-4">Profils en vedette</h2>
+
+        {profiles.length === 0 ? (
+          <p className="text-center text-gray-600">Aucun profil trouvé dans cette catégorie.</p>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
+            {profiles.map((profile) => (
+              <ProfileCard
+                key={profile.id}
+                profile={profile}
+                cities={cities}
+                onEdit={() => {}}
+                onDelete={() => {}}
+              />
+            ))}
+          </div>
+        )}
+
+        <div className="text-center">
+          <Link
+            to={`/category/${slug}`}
+            className="inline-block px-6 py-2 bg-pink-600 text-white rounded-full font-medium hover:bg-pink-700 transition"
+          >
+            Voir tous les profils
+          </Link>
         </div>
-      )}
-
-      <div className="text-center">
-        <Link
-          to={`/category/${slug}`}
-          className="inline-block px-6 py-2 bg-pink-600 text-white rounded-full font-medium hover:bg-pink-700 transition"
-        >
-          Voir tous les profils
-        </Link>
       </div>
-    </div>
+    </>
   );
 };
 

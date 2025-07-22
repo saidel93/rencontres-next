@@ -16,7 +16,8 @@ import BlogsPage from './pages/BlogsPage';
 import Footer from './components/Footer';
 import LegalDisclaimerModal from './components/LegalDisclaimerModal';
 import HomePage from './pages/HomePage';
-import FavorisPage from './pages/FavorisPage'; // ✅ new import
+import FavorisPage from './pages/FavorisPage';
+import ProfilePage from './pages/ProfilePage'; // ✅ ✅ ✅ THIS LINE FIXES THE ERROR
 
 const AFFILIATE_LINK =
   'https://t.mbdaad.link/341603/5165?bo=2753,2754,2755,2756&popUnder=true&aff_sub5=SF_006OG000004lmDN';
@@ -119,7 +120,7 @@ const AppContent = () => {
               <Route path="/city/:slug" element={<CityPage />} />
               <Route path="/cities" element={<CitiesPage />} />
               <Route path="/blogs" element={<BlogsPage />} />
-              <Route path="/profile/:slug" element={<ProfilePage />} /> {/* ✅ Updated here */}
+              <Route path="/profile/:slug" element={<ProfilePage />} /> {/* ✅ Working now */}
               <Route path="/legal" element={<LegalPage />} />
               <Route path="/favoris" element={<FavorisPage />} />
             </Routes>
